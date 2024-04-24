@@ -1,13 +1,14 @@
 pipeline {
     agent any
     environment{
-        credential = 'baiksekali'
+        credential = 'github'
         server = 'baiksekali@103.150.92.227'
         directory = '/home/baiksekali/literature-backend'
         branch = 'main'
         service = 'backend'
         image = 'iansinambela/lite-be'
     }
+
     stages {
         stage('Pull code dari repository'){
             steps {
@@ -21,6 +22,7 @@ pipeline {
                 }
             }
         }
+
         stage('Building application'){
             steps {
                 sshagent([credential]) {
@@ -33,6 +35,7 @@ pipeline {
                 }
             }
         }
+
         stage('Testing application'){
             steps {
                 sshagent([credential]) {
@@ -47,6 +50,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy aplikasi on top kubectl'){
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
@@ -61,6 +65,7 @@ pipeline {
                 }
             }
         }
+
         stage('Push image to docker hub'){
             steps {
                 sshagent([credential]) {
@@ -72,6 +77,7 @@ pipeline {
                 }
             }
         }
+
         stage('send notification to discord'){
             steps {
                 discordSend description: "backend notify", footer: "ian notify", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "https://discord.com/api/webhooks/1232551770614665298/xQdk4sfscxduagJVQ6gdpN1aYAXCIKr-D_L2fALi9pc0qUdcDNTMgq_vHzrxPxpOT-4V"
