@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment{
-        credential = 'github'
+        credential = 'id_ed25519'
         server = 'baiksekali@103.150.92.227'
         directory = '/home/baiksekali/literature-backend'
         branch = 'main'
